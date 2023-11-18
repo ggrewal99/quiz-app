@@ -1,0 +1,137 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color: #313e51;
+    --font-color-primary: #fffffc;
+    --font-color-secondary: #8f9fb6;
+    --component-bg-color: #3c4d67;
+    --component-bg-color-hover: rgb(134, 142, 153);
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-color);
+    font-family: 'Lato', sans-serif;
+}
+
+.navbar {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 2rem 20rem;
+}
+
+.theme-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.form-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1.2);
+}
+
+.form-check-input:hover {
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #7b32a8;
+    border-color: #7b32a8;
+}
+
+.form-check-input:focus {
+    box-shadow: none;
+    border-color: #7b32a8;
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    height: 80%;
+    margin: 0 20rem;
+    padding: 10rem 0;
+}
+
+.heading-section {
+    width: 50%;
+}
+
+.heading-section h1 {
+    color: var(--font-color-primary);
+    font-size: 5rem;
+    font-weight: 300;
+}
+
+.heading-section span {
+    font-weight: 800;
+}
+
+.heading-section h3 {
+    color: var(--font-color-secondary);
+    font-size: 1.5rem;
+    font-weight: 300;
+} 
+
+
+.topic-selection {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.topic-selection button {
+    background-color: var(--component-bg-color);
+    border: none;
+    font-size: 1.5rem;
+    color: var(--font-color-primary);
+    text-align: start;
+    padding: 1rem;
+    text-transform: capitalize;
+    font-weight: 600;
+    border-radius: 1rem;
+    transition: all 0.2s;
+}
+
+.topic-selection button:hover {
+    transition: all 0.2s;
+    background-color: var(--component-bg-color-hover);
+}
+
+.topic-selection button i {
+    margin-right: 1.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.cat-1 i {
+    color: #fefeb9;
+    background-color: #fefeb97f;
+}
+
+.cat-2 i {
+    color: #ec644b;
+    background-color: #ec634b6d;
+}
+
+.cat-3 i {
+    color: #d5ebda;
+    background-color: #d5ebda7b;
+}
+.cat-4 i {
+    color: #f4baec;
+    background-color: #f4baec86;
+}
