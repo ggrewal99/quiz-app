@@ -1,0 +1,154 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const categories = document.querySelectorAll(".topic-selection .option");
+    const quizStartBtn = document.querySelector(".take-quiz-btn");
+    const answers = document.querySelectorAll(".answers .option");
+    const confirmAnsBtn = document.querySelector(".confirm-answer");
+    const nextQuesBtn = document.querySelector(".next-ques");
+    const welcomePage = document.querySelector(".welcome");
+    const homeBtn = document.querySelector(".home");
+    const resultPage = document.querySelector(".result");
+    const quizTitle = document.querySelector(".quiz-title");
+    const questionPage = document.querySelector(".question-section");
+
+    let questions;
+    let score = 0;
+    let currentQuestionIndex = 0;
+    let currentQuestion;
+
+    homeBtn.addEventListener("click", () => {
+        welcomePage.classList.remove("oldPage");
+        welcomePage.style.display = "flex";
+        score = 0;
+        currentQuestionIndex = 0;
+        quizTitle.textContent = "";
+        document.querySelectorAll(".option-selected").forEach(option => {
+            option.classList.remove("option-selected");
+        })
+    })
+
+    categories.forEach(option => {
+        option.addEventListener("click", () => {
+            categories.forEach(opt => {
+                opt.classList.remove("option-selected");
+            });
+            option.classList.toggle("option-selected");
+            quizStartBtn.style.visibility = "visible";
+            quizStartBtn.style.opacity = "1";
+        })
+    })
+
+    quizStartBtn.addEventListener("click", () => {
+
+        welcomePage.classList.add("oldPage");
+        questionPage.classList.add("newPage");
+        setTimeout(() => {
+            welcomePage.style.display = "none";
+            questionPage.style.display = "flex";
+        }, 300);
+
+        const selectedTopic = document.querySelector(".option-selected");
+
+        // console.log('Selected Topic:', selectedTopic);
+        // console.log('Data Name:', selectedTopic.getAttribute('data-name'));
+
+        quizTitle.style.visibility = "visible";
+        let topic = selectedTopic.dataset.name;
+        if (topic === "classics") {
+            quizTitle.innerHTML = `<i class="fa-solid fa-film"></i><span>Timeless Classics</span>`;
+            quizTitle.classList.add("option-1");
+        } else if (topic === "hits") {
+            quizTitle.innerHTML = `<i class="fa-solid fa-gun"></i><span>Blockbuster Hits</span>`;
+            quizTitle.classList.add("option-2");
+        } else if (topic === "quotes") {
+            quizTitle.innerHTML = `<i class="fa-solid fa-comment-dots"></i><span>Movie quotes</span>`;
+            quizTitle.classList.add("option-3");
+        } else if (topic === "directors") {
+            quizTitle.innerHTML = `<i class="fa-solid fa-clapperboard"></i><span>Director's cut</span>`;
+            quizTitle.classList.add("option-4");
+        }
+
+        fetch(`./data/${topic}.json`)
+            .then(response => response.json())
+            .then(data => {
+                questions = data;
+                console.log("In fetch:");
+                console.log(questions.questions[0]);
+                showNextQuestion();
+            })
+            .catch(e => console.log("Error while fetching questions!", e));
+    })
+
+    answers.forEach(option => {
+        option.addEventListener("click", () => {
+            answers.forEach(opt => {
+                opt.classList.remove("option-selected");
+            });
+            option.classList.toggle("option-selected");
+            confirmAnsBtn.style.visibility = "visible";
+            confirmAnsBtn.style.opacity = "1";
+        })
+    })
+
+    confirmAnsBtn.addEventListener("click", () => {
+        confirmAnsBtn.style.display = "none";
+        nextQuesBtn.style.visibility = "visible";
+        nextQuesBtn.style.display = "block";
+        nextQuesBtn.style.opacity = "1";
+
+        const answer = document.querySelector(".answers .option-selected");
+
+        if (answer.textContent === currentQuestion.answer) {
+            answer.classList.add("correct-answer");
+            score += 10;
+        } else {
+            answer.classList.add("incorrect-answer");
+            answers.forEach(option => {
+                if (option.textContent === currentQuestion.answer) {
+                    option.classList.add("correct-answer");
+                }
+            })
+        }
+    })
+
+    nextQuesBtn.addEventListener("click", () => {
+        if (currentQuestionIndex + 1 === questions.questions.length) {
+            questionPage.style.display = "none";
+            resultPage.style.display = "flex";
+            resultPage.style.visibility = "visible";
+            document.querySelector(".score").textContent = score;
+            return;
+        }
+        currentQuestionIndex++;
+        answers.forEach(option => {
+            option.classList.remove("option-selected");
+            option.classList.remove("correct-answer");
+            option.classList.remove("incorrect-answer");
+        })
+        confirmAnsBtn.style.display = "block";
+        confirmAnsBtn.style.visibility = "hidden";
+        nextQuesBtn.style.visibility = "hidden";
+        nextQuesBtn.style.display = "none";
+        nextQuesBtn.style.opacity = "0";
+        showNextQuestion();
+    })
+
+    const showNextQuestion = () => {
+        console.log("1");
+        if (questions && questions.questions.length > currentQuestionIndex) {
+            console.log("2");
+            questionHeading = document.querySelector(".question-section .heading-section h3 span");
+            questionHeading.textContent = `${currentQuestionIndex + 1}/${questions.questions.length}`;
+            currentQuestion = questions.questions[currentQuestionIndex];
+            document.querySelector(".question-text").textContent = currentQuestion.question;
+            console.log("3");
+            const options = document.querySelectorAll(".answers .option");
+
+            currentQuestion.options.forEach((option, index) => {
+                options[index].textContent = option;
+
+            });
+        } else {
+            console.log("No more questions!");
+        }
+    }
+})
