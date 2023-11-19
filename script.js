@@ -9,21 +9,53 @@ document.addEventListener("DOMContentLoaded", () => {
     const resultPage = document.querySelector(".result");
     const quizTitle = document.querySelector(".quiz-title");
     const questionPage = document.querySelector(".question-section");
+    const themeSwitch = document.querySelector("#themeSwitcher");
+    const body = document.querySelector("body");
 
     let questions;
     let score = 0;
     let currentQuestionIndex = 0;
     let currentQuestion;
+    let answerSubmitted = false;
+
+    themeSwitch.addEventListener("change", () => {
+        if (themeSwitch.checked) {
+            body.classList.remove("light")
+        } else {
+            body.classList.add("light");
+        }
+    })
 
     homeBtn.addEventListener("click", () => {
         welcomePage.classList.remove("oldPage");
         welcomePage.style.display = "flex";
+        questions = {};
         score = 0;
         currentQuestionIndex = 0;
+        currentQuestion = "";
         quizTitle.textContent = "";
+        answerSubmitted = false;
+        resultPage.style.display = "none";
+        quizStartBtn.style.visibility = "hidden";
+        quizStartBtn.style.opacity = "0";
+        answers.forEach(option => {
+            option.classList.remove("option-selected");
+            option.classList.remove("correct-answer");
+            option.classList.remove("incorrect-answer");
+        })
+        confirmAnsBtn.style.display = "block";
+        confirmAnsBtn.style.visibility = "hidden";
+        nextQuesBtn.style.visibility = "hidden";
+        nextQuesBtn.style.display = "none";
+        nextQuesBtn.style.opacity = "0";
+        answerSubmitted = false;
         document.querySelectorAll(".option-selected").forEach(option => {
             option.classList.remove("option-selected");
         })
+
+        answers.forEach(opt => {
+            opt.style.cursor = "pointer";
+        });
     })
 
     categories.forEach(option => {
@@ -47,9 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 300);
 
         const selectedTopic = document.querySelector(".option-selected");
-
-        // console.log('Selected Topic:', selectedTopic);
-        // console.log('Data Name:', selectedTopic.getAttribute('data-name'));
 
         quizTitle.style.visibility = "visible";
         let topic = selectedTopic.dataset.name;
@@ -80,16 +109,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     answers.forEach(option => {
         option.addEventListener("click", () => {
-            answers.forEach(opt => {
-                opt.classList.remove("option-selected");
-            });
-            option.classList.toggle("option-selected");
-            confirmAnsBtn.style.visibility = "visible";
-            confirmAnsBtn.style.opacity = "1";
+            if (!answerSubmitted) {
+                answers.forEach(opt => {
+                    opt.classList.remove("option-selected");
+                });
+                option.classList.toggle("option-selected");
+                confirmAnsBtn.style.visibility = "visible";
+                confirmAnsBtn.style.opacity = "1";
+            }
         })
     })
 
     confirmAnsBtn.addEventListener("click", () => {
+        answerSubmitted = true;
+        answers.forEach(opt => {
+            opt.style.cursor = "not-allowed";
+        });
         confirmAnsBtn.style.display = "none";
         nextQuesBtn.style.visibility = "visible";
         nextQuesBtn.style.display = "block";
@@ -99,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (answer.textContent === currentQuestion.answer) {
             answer.classList.add("correct-answer");
-            score += 10;
+            score++;
         } else {
             answer.classList.add("incorrect-answer");
             answers.forEach(option => {
@@ -129,23 +164,28 @@ document.addEventListener("DOMContentLoaded", () => {
         nextQuesBtn.style.visibility = "hidden";
         nextQuesBtn.style.display = "none";
         nextQuesBtn.style.opacity = "0";
+        answerSubmitted = false;
+        answers.forEach(opt => {
+            opt.style.cursor = "pointer";
+        });
         showNextQuestion();
     })
 
     const showNextQuestion = () => {
-        console.log("1");
+        answers.forEach(option => {
+            option.classList.remove("option-selected");
+            option.classList.remove("correct-answer");
+            option.classList.remove("incorrect-answer");
+        })
         if (questions && questions.questions.length > currentQuestionIndex) {
-            console.log("2");
             questionHeading = document.querySelector(".question-section .heading-section h3 span");
             questionHeading.textContent = `${currentQuestionIndex + 1}/${questions.questions.length}`;
             currentQuestion = questions.questions[currentQuestionIndex];
             document.querySelector(".question-text").textContent = currentQuestion.question;
-            console.log("3");
             const options = document.querySelectorAll(".answers .option");
 
             currentQuestion.options.forEach((option, index) => {
                 options[index].textContent = option;
-
             });
         } else {
             console.log("No more questions!");
