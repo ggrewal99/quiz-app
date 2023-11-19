@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        fetch(`./data/${topic}.json`)
+        fetch(`./assets/quiz_data/${topic}.json`)
             .then(response => response.json())
             .then(data => {
                 questions = data;
