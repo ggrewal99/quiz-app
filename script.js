@@ -18,15 +18,30 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentQuestion;
     let answerSubmitted = false;
 
-    themeSwitch.addEventListener("change", () => {
-        if (themeSwitch.checked) {
-            body.classList.remove("light")
-        } else {
-            body.classList.add("light");
-        }
-    })
+    const resetAnswers = () => {
+        answers.forEach(option => {
+            option.classList.remove("option-selected");
+            option.classList.remove("correct-answer");
+            option.classList.remove("incorrect-answer");
+            option.style.cursor = "pointer";
+        })
+        document.querySelectorAll(".option-selected").forEach(option => {
+            option.classList.remove("option-selected");
+        })
+    }
 
-    homeBtn.addEventListener("click", () => {
+    const resetButtons = () => {
+        confirmAnsBtn.style.display = "block";
+        confirmAnsBtn.style.visibility = "hidden";
+        nextQuesBtn.style.visibility = "hidden";
+        nextQuesBtn.style.display = "none";
+        nextQuesBtn.style.opacity = "0";
+        quizStartBtn.style.visibility = "hidden";
+        quizStartBtn.style.opacity = "0";
+    }
+
+    const resetQuiz = () => {
+        answerSubmitted = false;
         welcomePage.classList.remove("oldPage");
         welcomePage.style.display = "flex";
         questions = {};
@@ -36,27 +51,19 @@ document.addEventListener("DOMContentLoaded", () => {
         quizTitle.textContent = "";
         answerSubmitted = false;
         resultPage.style.display = "none";
-        quizStartBtn.style.visibility = "hidden";
-        quizStartBtn.style.opacity = "0";
-        answers.forEach(option => {
-            option.classList.remove("option-selected");
-            option.classList.remove("correct-answer");
-            option.classList.remove("incorrect-answer");
-        })
-        confirmAnsBtn.style.display = "block";
-        confirmAnsBtn.style.visibility = "hidden";
-        nextQuesBtn.style.visibility = "hidden";
-        nextQuesBtn.style.display = "none";
-        nextQuesBtn.style.opacity = "0";
-        answerSubmitted = false;
-        document.querySelectorAll(".option-selected").forEach(option => {
-            option.classList.remove("option-selected");
-        })
+        resetAnswers();
+        resetButtons();
+    }
 
-        answers.forEach(opt => {
-            opt.style.cursor = "pointer";
-        });
+    themeSwitch.addEventListener("change", () => {
+        if (themeSwitch.checked) {
+            body.classList.remove("light")
+        } else {
+            body.classList.add("light");
+        }
     })
+
+    homeBtn.addEventListener("click", resetQuiz);
 
     categories.forEach(option => {
         option.addEventListener("click", () => {
@@ -95,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
             quizTitle.innerHTML = `<i class="fa-solid fa-clapperboard"></i><span>Director's cut</span>`;
             quizTitle.classList.add("option-4");
         }
+
 
         fetch(`./data/${topic}.json`)
             .then(response => response.json())
@@ -154,16 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         currentQuestionIndex++;
-        answers.forEach(option => {
-            option.classList.remove("option-selected");
-            option.classList.remove("correct-answer");
-            option.classList.remove("incorrect-answer");
-        })
-        confirmAnsBtn.style.display = "block";
-        confirmAnsBtn.style.visibility = "hidden";
-        nextQuesBtn.style.visibility = "hidden";
-        nextQuesBtn.style.display = "none";
-        nextQuesBtn.style.opacity = "0";
+        resetButtons();
         answerSubmitted = false;
         answers.forEach(opt => {
             opt.style.cursor = "pointer";
@@ -172,11 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     const showNextQuestion = () => {
-        answers.forEach(option => {
-            option.classList.remove("option-selected");
-            option.classList.remove("correct-answer");
-            option.classList.remove("incorrect-answer");
-        })
+        resetAnswers();
         if (questions && questions.questions.length > currentQuestionIndex) {
             questionHeading = document.querySelector(".question-section .heading-section h3 span");
             questionHeading.textContent = `${currentQuestionIndex + 1}/${questions.questions.length}`;
